@@ -1,1 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frases en Francés</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000;
+            text-align: center;
+            padding: 10px;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        .french-phrase {
+            cursor: pointer;
+            color: red;
+        }
+        .spanish {
+            color: blue;
+        }
+        .french {
+            color: red;
+        }
+        .pronunciation {
+            color: green;
+        }
+    </style>
+</head>
+<body>
 
+    <h1>Frases en Francés</h1>
+
+    <!-- Aquí se generarán dinámicamente las tablas con las frases -->
+    <div id="tables-container"></div>
+
+    <script>
+        // Datos con las tablas y frases
+        const tablesData = [
+            // Aquí irán las tablas que iremos agregando una por una
+        ];
+
+        // Función para crear una tabla
+        function createTable(tableData) {
+            const table = document.createElement('table');
+            const headerRow = document.createElement('tr');
+            
+            // Encabezados de la tabla
+            ['ESPAÑOL', 'FRANÇAIS', 'PRONUNCIACIÓN'].forEach(headerText => {
+                const th = document.createElement('th');
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+            table.appendChild(headerRow);
+
+            // Filas con datos
+            tableData.rows.forEach(row => {
+                const tr = document.createElement('tr');
+                
+                // Crear celdas para español, francés y pronunciación
+                const spanishCell = document.createElement('td');
+                spanishCell.textContent = row.spanish;
+                spanishCell.classList.add('spanish');
+
+                const frenchCell = document.createElement('td');
+                frenchCell.textContent = row.french;
+                frenchCell.classList.add('french');
+                frenchCell.onclick = () => playAudio(row.audio, row.french);
+
+                const pronunciationCell = document.createElement('td');
+                pronunciationCell.textContent = row.pronunciation;
+                pronunciationCell.classList.add('pronunciation');
+
+                tr.appendChild(spanishCell);
+                tr.appendChild(frenchCell);
+                tr.appendChild(pronunciationCell);
+                table.appendChild(tr);
+            });
+
+            return table;
+        }
+
+        // Función para reproducir el audio si está disponible, o usar la síntesis de voz si no lo está
+        function playAudio(audioFile, fallbackText) {
+            if (audioFile) {
+                const audio = new Audio(audioFile);
+                audio.play();
+            } else {
+                const utterance = new SpeechSynthesisUtterance(fallbackText);
+                utterance.lang = 'fr-FR';
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Renderizar todas las tablas en el contenedor principal
+        function renderTables() {
+            const container = document.getElementById('tables-container');
+            tablesData.forEach(tableData => {
+                const table = createTable(tableData);
+                const tableTitle = document.createElement('h2');
+                tableTitle.textContent = tableData.title;
+                container.appendChild(tableTitle);
+                container.appendChild(table);
+            });
+        }
+
+        // Llamada a la función para renderizar las tablas
+        renderTables();
+    </script>
+
+</body>
+</html>
